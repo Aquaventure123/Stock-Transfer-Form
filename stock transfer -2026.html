@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stock Transfer Form</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange:       #F97316;
+    --orange-light: #FED7AA;
+    --orange-dark:  #C2410C;
+    --orange-soft:  #FFF7ED;
+    --purple:       #7C3AED;
+    --purple-light: #DDD6FE;
+    --purple-dark:  #5B21B6;
+    --purple-soft:  #F5F3FF;
+    --white:        #FFFFFF;
+    --gray-50:      #FAFAFA;
+    --gray-100:     #F4F4F5;
+    --gray-200:     #E4E4E7;
+    --gray-400:     #A1A1AA;
+    --gray-600:     #52525B;
+    --gray-800:     #27272A;
+    --error:        #EF4444;
+    --error-bg:     #FEF2F2;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: linear-gradient(135deg, #1e0a3c 0%, #3b0764 40%, #7c2d12 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 40px 16px 60px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Decorative background blobs */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -100px; right: -100px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(249,115,22,0.25) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -80px; left: -80px;
+    width: 350px; height: 350px;
+    background: radial-gradient(circle, rgba(124,58,237,0.3) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .form-wrapper {
+    width: 100%;
+    max-width: 600px;
+    animation: slideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Header card */
+  .form-header {
+    background: var(--white);
+    border-radius: 16px 16px 0 0;
+    padding: 28px 32px 24px;
+    border-top: 6px solid var(--purple);
+    position: relative;
+    overflow: hidden;
+  }
+  .form-header::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 160px; height: 100%;
+    background: linear-gradient(135deg, transparent 60%, rgba(249,115,22,0.08) 100%);
+    pointer-events: none;
+  }
+  .form-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--gray-800);
+    letter-spacing: -0.3px;
+    margin-bottom: 10px;
+  }
+  .required-note {
+    font-size: 13px;
+    color: var(--orange-dark);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .required-note::before {
+    content: '*';
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--orange);
+  }
+
+  /* ── CONFIG BANNER ── */
+  .config-banner {
+    background: linear-gradient(135deg, #fff7ed, #f5f3ff);
+    border: 1.5px dashed var(--orange);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin: 16px 0 0;
+    font-size: 13px;
+    color: var(--gray-600);
+    line-height: 1.6;
+  }
+  .config-banner strong { color: var(--purple-dark); }
+  .config-banner code {
+    background: var(--purple-light);
+    color: var(--purple-dark);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: monospace;
+  }
+
+  /* Main form body */
+  .form-body {
+    background: var(--gray-50);
+    padding: 0 0 8px;
+  }
+
+  /* Each field card */
+  .field-card {
+    background: var(--white);
+    margin: 10px 0;
+    padding: 22px 32px 20px;
+    border-left: 3px solid transparent;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeCard 0.5s ease forwards;
+    opacity: 0;
+  }
+  .field-card:nth-child(1) { animation-delay: 0.1s; }
+  .field-card:nth-child(2) { animation-delay: 0.18s; }
+  .field-card:nth-child(3) { animation-delay: 0.26s; }
+  .field-card:nth-child(4) { animation-delay: 0.34s; }
+  .field-card:nth-child(5) { animation-delay: 0.42s; }
+  .field-card:nth-child(6) { animation-delay: 0.50s; }
+  .field-card:nth-child(7) { animation-delay: 0.58s; }
+
+  @keyframes fadeCard {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .field-card:focus-within {
+    border-left-color: var(--orange);
+    box-shadow: 0 2px 12px rgba(249,115,22,0.1);
+  }
+  .field-card.error {
+    border-left-color: var(--error);
+    background: var(--error-bg);
+  }
+
+  label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--gray-800);
+    margin-bottom: 10px;
+  }
+  label .req { color: var(--orange); margin-left: 3px; font-weight: 700; }
+
+  /* Input base */
+  input[type="text"],
+  input[type="number"],
+  input[type="date"],
+  select,
+  textarea {
+    width: 100%;
+    max-width: 380px;
+    padding: 10px 14px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    color: var(--gray-800);
+    background: var(--white);
+    border: 1.5px solid var(--gray-200);
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  input::placeholder, textarea::placeholder { color: var(--gray-400); font-weight: 300; }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--purple);
+    box-shadow: 0 0 0 3px rgba(124,58,237,0.12);
+  }
+  .field-card.error input,
+  .field-card.error select,
+  .field-card.error textarea {
+    border-color: var(--error);
+    box-shadow: 0 0 0 3px rgba(239,68,68,0.1);
+  }
+
+  /* Select wrapper */
+  .select-wrapper {
+    position: relative;
+    max-width: 380px;
+  }
+  .select-wrapper::after {
+    content: '▾';
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--purple);
+    font-size: 14px;
+    pointer-events: none;
+  }
+  .select-wrapper select { padding-right: 36px; cursor: pointer; }
+
+  textarea { max-width: 100%; min-height: 80px; resize: vertical; }
+
+  /* Error message */
+  .error-msg {
+    display: none;
+    margin-top: 8px;
+    font-size: 12.5px;
+    color: var(--error);
+    align-items: center;
+    gap: 5px;
+  }
+  .error-msg::before { content: '⊘'; font-size: 14px; }
+  .field-card.error .error-msg { display: flex; }
+
+  /* Inline grid for product rows */
+  .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 100%; }
+  .product-grid input { max-width: 100%; }
+
+  /* Add/remove row buttons */
+  .row-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .btn-add, .btn-remove {
+    padding: 7px 16px;
+    border-radius: 6px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1.5px solid;
+    transition: all 0.2s;
+  }
+  .btn-add {
+    background: var(--purple-soft);
+    color: var(--purple-dark);
+    border-color: var(--purple-light);
+  }
+  .btn-add:hover { background: var(--purple-light); }
+  .btn-remove {
+    background: #fef2f2;
+    color: #b91c1c;
+    border-color: #fecaca;
+    display: none;
+  }
+  .btn-remove:hover { background: #fee2e2; }
+
+  .product-row { margin-bottom: 10px; }
+  .product-row-label {
+    font-size: 12px;
+    color: var(--gray-400);
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+
+  /* Footer card */
+  .form-footer {
+    background: var(--white);
+    border-radius: 0 0 16px 16px;
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    border-top: 1px solid var(--gray-100);
+  }
+
+  .btn-submit {
+    padding: 12px 32px;
+    background: linear-gradient(135deg, var(--orange), var(--orange-dark));
+    color: white;
+    font-family: 'Outfit', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+    transition: all 0.25s;
+    box-shadow: 0 4px 14px rgba(249,115,22,0.4);
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-submit::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .btn-submit:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(249,115,22,0.5); }
+  .btn-submit:hover::after { opacity: 1; }
+  .btn-submit:active { transform: translateY(0); }
+  .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  .btn-clear {
+    background: none;
+    border: none;
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    color: var(--purple);
+    cursor: pointer;
+    font-weight: 500;
+    transition: color 0.2s;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .btn-clear:hover { color: var(--purple-dark); }
+
+  /* Toast notification */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--gray-800);
+    color: white;
+    padding: 14px 24px;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 9999;
+    transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.success { background: linear-gradient(135deg, #059669, #047857); }
+  .toast.error-t  { background: linear-gradient(135deg, #dc2626, #b91c1c); }
+
+  /* Loading spinner */
+  .spinner {
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: inline-block;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 500px) {
+    .form-header, .field-card, .form-footer { padding-left: 20px; padding-right: 20px; }
+    .product-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="form-wrapper">
+
+  <!-- HEADER -->
+<div class="form-header">
+    <img src="https://res.cloudinary.com/dmghrv6zq/image/upload/v1780077769/logo3_d2xqmy.png" alt="Logo"
+         style="position:absolute;top:16px;left:20px;height:65px;width:auto;object-fit:contain;">
+    <h1 style="text-align:center;">Stock Transfer Form</h1>
+   
+
+  </div>
+
+  <!-- FORM BODY -->
+  <div class="form-body">
+  <form id="transferForm" novalidate>
+
+    <!-- Transfer From Company -->
+    <div class="field-card" id="card-company">
+      <label for="company">Transfer From Company <span class="req">*</span></label>
+      <div class="select-wrapper">
+        <select id="company" name="company">
+          <option value="" disabled selected>Choose</option>
+          <option value="Aquaventure">Aquaventure</option>
+          <option value="Aquaventure Solution Pvt. Ltd.">Aquaventure Solution Pvt. Ltd.</option>
+        </select>
+      </div>
+      <p class="error-msg">This is a required question</p>
+    </div>
+
+    <!-- Bill No -->
+    <div class="field-card" id="card-bill">
+      <label for="bill">Bill no. <span class="req">*</span></label>
+      <input type="text" id="bill" name="bill" placeholder="Your answer" autocomplete="off">
+      <p class="error-msg">This is a required question</p>
+    </div>
+
+    <!-- Customer Name -->
+    <div class="field-card" id="card-customer">
+      <label for="customer">Customer Name <span class="req">*</span></label>
+      <input type="text" id="customer" name="customer" placeholder="Your answer" autocomplete="off">
+      <p class="error-msg">This is a required question</p>
+    </div>
+
+    <!-- Product Code - Qty (dynamic rows) -->
+    <div class="field-card" id="card-products">
+      <label>Product Code – Qty. <span class="req">*</span></label>
+      <div id="productRows">
+        <div class="product-row" data-row="1">
+          <p class="product-row-label">Item 1</p>
+          <div class="product-grid">
+            <input type="text"   placeholder="Product Code" class="prod-code" autocomplete="off">
+            <input type="number" placeholder="Qty."         class="prod-qty"  min="1" autocomplete="off">
+          </div>
+        </div>
+      </div>
+      <div class="row-actions">
+        <button type="button" class="btn-add" onclick="addProductRow()">+ Add Item</button>
+        <button type="button" class="btn-remove" id="btn-remove" onclick="removeLastRow()">− Remove Last</button>
+      </div>
+      <p class="error-msg">Enter at least one product code and quantity</p>
+    </div>
+
+    <!-- Transfer Date -->
+    <div class="field-card" id="card-date">
+      <label for="tdate">Transfer Date <span class="req">*</span></label>
+      <input type="date" id="tdate" name="tdate">
+      <p class="error-msg">This is a required question</p>
+    </div>
+
+    <!-- Remarks (optional) -->
+    <div class="field-card">
+      <label for="remarks">Remarks <span style="color:var(--gray-400);font-weight:400;font-size:12px">(optional)</span></label>
+      <textarea id="remarks" name="remarks" placeholder="Any additional notes..."></textarea>
+    </div>
+
+  </form>
+  </div><!-- /form-body -->
+
+  <!-- FOOTER -->
+  <div class="form-footer">
+    <button class="btn-submit" id="submitBtn" onclick="submitForm()">Submit</button>
+    <button class="btn-clear" onclick="clearForm()">Clear form</button>
+  </div>
+
+</div><!-- /form-wrapper -->
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  /* ============================================================
+     CONFIGURATION — replace these two values
+  ============================================================ */
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbybkhHgGpH8PFbEGAWS7yBf6I2qTtwig-KYms1NhmhyBqDhgER-icFft5nymwD5544h/exec";   // paste your deployed Apps Script URL here
+  /* ============================================================ */
+
+  // Set today's date as default
+  document.getElementById('tdate').value = new Date().toISOString().split('T')[0];
+
+  let rowCount = 1;
+
+  function addProductRow() {
+    rowCount++;
+    const container = document.getElementById('productRows');
+    const div = document.createElement('div');
+    div.className = 'product-row';
+    div.dataset.row = rowCount;
+    div.innerHTML = `
+      <p class="product-row-label">Item ${rowCount}</p>
+      <div class="product-grid">
+        <input type="text"   placeholder="Product Code" class="prod-code" autocomplete="off">
+        <input type="number" placeholder="Qty."         class="prod-qty"  min="1" autocomplete="off">
+      </div>`;
+    container.appendChild(div);
+    div.querySelector('.prod-code').focus();
+    document.getElementById('btn-remove').style.display = rowCount > 1 ? 'inline-flex' : 'none';
+  }
+
+  function removeLastRow() {
+    if (rowCount <= 1) return;
+    const rows = document.querySelectorAll('#productRows .product-row');
+    rows[rows.length - 1].remove();
+    rowCount--;
+    document.getElementById('btn-remove').style.display = rowCount > 1 ? 'inline-flex' : 'none';
+  }
+
+  function clearForm() {
+    document.getElementById('transferForm').reset();
+    document.getElementById('tdate').value = new Date().toISOString().split('T')[0];
+    // Remove extra product rows
+    const rows = document.querySelectorAll('#productRows .product-row');
+    for (let i = rows.length - 1; i > 0; i--) rows[i].remove();
+    rowCount = 1;
+    document.getElementById('btn-remove').style.display = 'none';
+    // Clear errors
+    document.querySelectorAll('.field-card.error').forEach(c => c.classList.remove('error'));
+    showToast('Form cleared', 'info');
+  }
+
+  function validate() {
+    let ok = true;
+
+    const checks = [
+      { id: 'card-company',  val: () => document.getElementById('company').value },
+      { id: 'card-bill',     val: () => document.getElementById('bill').value.trim() },
+      { id: 'card-customer', val: () => document.getElementById('customer').value.trim() },
+      { id: 'card-date',     val: () => document.getElementById('tdate').value },
+    ];
+
+    checks.forEach(({ id, val }) => {
+      const card = document.getElementById(id);
+      if (!val()) { card.classList.add('error'); ok = false; }
+      else         { card.classList.remove('error'); }
+    });
+
+    // Products validation
+    const codes = document.querySelectorAll('.prod-code');
+    const qtys  = document.querySelectorAll('.prod-qty');
+    let hasProduct = false;
+    codes.forEach((c, i) => { if (c.value.trim() && qtys[i].value) hasProduct = true; });
+    const pCard = document.getElementById('card-products');
+    if (!hasProduct) { pCard.classList.add('error'); ok = false; }
+    else             { pCard.classList.remove('error'); }
+
+    return ok;
+  }
+
+  function collectProducts() {
+    const codes = document.querySelectorAll('.prod-code');
+    const qtys  = document.querySelectorAll('.prod-qty');
+    const lines = [];
+    codes.forEach((c, i) => {
+      if (c.value.trim()) lines.push(`${c.value.trim()} × ${qtys[i].value || 0}`);
+    });
+    return lines.join(' | ');
+  }
+
+  function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    const icon = type === 'success' ? '✓' : type === 'error-t' ? '✕' : 'ℹ';
+    t.innerHTML = `<span>${icon}</span> ${msg}`;
+    t.className = `toast ${type} show`;
+    setTimeout(() => t.classList.remove('show'), 3500);
+  }
+
+  async function submitForm() {
+    if (!validate()) {
+      showToast('Please fill all required fields', 'error-t');
+      // Scroll to first error
+      const first = document.querySelector('.field-card.error');
+      if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    if (WEB_APP_URL === "YOUR_WEB_APP_URL") {
+      showToast('⚙️ Please configure WEB_APP_URL first!', 'error-t');
+      return;
+    }
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Submitting…';
+
+    const payload = {
+      company:  document.getElementById('company').value,
+      bill:     document.getElementById('bill').value.trim(),
+      customer: document.getElementById('customer').value.trim(),
+      products: collectProducts(),
+      date:     document.getElementById('tdate').value,
+      remarks:  document.getElementById('remarks').value.trim(),
+    };
+
+    try {
+      await fetch(WEB_APP_URL, {
+        method: 'POST',
+        mode: 'no-cors',          // Google Apps Script needs no-cors
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      showToast('✓ Response submitted successfully!', 'success');
+      setTimeout(clearForm, 1200);
+    } catch (err) {
+      console.error(err);
+      showToast('Submission failed — check your URL', 'error-t');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Submit';
+    }
+  }
+
+  // Live error clearing on input
+  document.querySelectorAll('input, select, textarea').forEach(el => {
+    el.addEventListener('input', () => {
+      const card = el.closest('.field-card');
+      if (card) card.classList.remove('error');
+    });
+  });
+</script>
+</body>
+</html>
