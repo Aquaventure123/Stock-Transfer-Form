@@ -395,6 +395,11 @@
   <!-- FORM BODY -->
   <div class="form-body">
   <form id="transferForm" novalidate>
+    <div class="field-card" id="card-name">
+  <label for="uname">Your Name <span class="req">*</span></label>
+  <input type="text" id="uname" placeholder="Your answer" autocomplete="off">
+  <p class="error-msg">This is a required question</p>
+</div>
 
     <!-- Transfer From Company -->
     <div class="field-card" id="card-company">
@@ -527,6 +532,7 @@
       { id: 'card-bill',     val: () => document.getElementById('bill').value.trim() },
       { id: 'card-customer', val: () => document.getElementById('customer').value.trim() },
       { id: 'card-date',     val: () => document.getElementById('tdate').value },
+      { id: 'card-name', val: () => document.getElementById('uname').value.trim() },
     ];
 
     checks.forEach(({ id, val }) => {
@@ -584,6 +590,7 @@
     btn.innerHTML = '<span class="spinner"></span> Submitting…';
 
     const payload = {
+      name: document.getElementById('uname').value.trim(),
       company:  document.getElementById('company').value,
       bill:     document.getElementById('bill').value.trim(),
       customer: document.getElementById('customer').value.trim(),
