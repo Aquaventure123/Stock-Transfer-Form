@@ -397,7 +397,13 @@
   <form id="transferForm" novalidate>
     <div class="field-card" id="card-name">
   <label for="uname">Your Name <span class="req">*</span></label>
-  <input type="text" id="uname" placeholder="Your answer" autocomplete="off">
+  <div class="select-wrapper">
+  <select id="uname">
+    <option value="" disabled selected>Choose Name</option>
+    <option value="Rahul Sharma">Ajay Verma</option>
+    <option value="Priya Verma">Rohit</option>
+  </select>
+</div>
   <p class="error-msg">This is a required question</p>
 </div>
 
@@ -532,7 +538,7 @@
       { id: 'card-bill',     val: () => document.getElementById('bill').value.trim() },
       { id: 'card-customer', val: () => document.getElementById('customer').value.trim() },
       { id: 'card-date',     val: () => document.getElementById('tdate').value },
-      { id: 'card-name', val: () => document.getElementById('uname').value.trim() },
+      { id: 'card-name', val: () => document.getElementById('uname').value },
     ];
 
     checks.forEach(({ id, val }) => {
